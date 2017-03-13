@@ -7,7 +7,7 @@ class Injector:
     PROC_ALL_ACCESS = (0x000F0000 | 0x00100000 | 0x00000FFF)
     MEM_CREATE = 0x00001000 | 0x00002000
     MEM_RELEASE = 0x8000
-    PAGE_EX = 0x40
+    PAGE_EXECUTE_READWRITE = 0x40
 
     def __init__(self):
         self.kernel32 = windll.kernel32
@@ -34,14 +34,14 @@ class Injector:
 
     def alloc_remote(self, buffer, size):
         alloc = self.kernel32.VirtualAllocEx(self.handle, None, c_int(size),
-                                             self.MEM_CREATE, self.PAGE_EX)
+                                             self.MEM_CREATE, self.PAGE_EXECUTE_READWRITE)
         if not alloc:
             raise WinError()
         self.write_memory(alloc, buffer)
         return alloc
 
     def free_remote(self, addr, size):
-        if not self.kernel32.VirtualFreeEx(self.handle, addr, c_int(size), self.MEM_RELEASE):
+        if not self.kernel32.VirtualFreeEx(self.handle, addr, c_int(0), self.MEM_RELEASE):
             raise WinError()
 
     def get_address_from_module(self, module, function):
