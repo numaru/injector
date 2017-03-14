@@ -63,7 +63,7 @@ class Injector:
         if self.kernel32.WaitForSingleObject(thread, 0xFFFFFFFF) == 0xFFFFFFFF:
             raise WinError()
         if not self.kernel32.GetExitCodeThread(thread, byref(dll_addr)):
-            return WinError()
+            raise WinError()
         self.free_remote(args_addr, len(args))
         return dll_addr.value
 
@@ -93,7 +93,7 @@ class Injector:
     def get_offset_of_exported_function(self, module, function):
         base_addr = self.kernel32.LoadLibraryA(module)
         if not base_addr:
-            return WinError()
+            raise WinError()
         function_addr = self.kernel32.GetProcAddress(base_addr, function.encode("ascii"))
         if not function_addr:
             raise WinError()
