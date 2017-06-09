@@ -84,3 +84,4 @@ python injector_cli.py path/to/exe path/to/dll
 # Known issues
 
  - You shouldn't be able to inject a x86 process with a 64bit python and vice versa.
+ - Path to DLL have to be absolute path.
